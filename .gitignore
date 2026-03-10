@@ -24,6 +24,7 @@ dist/
 build/
 *.egg-info/
 *.egg
+bin/
 
 # Logs & env
 *.log
