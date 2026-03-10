@@ -8,7 +8,11 @@ _Add setup instructions here._
 
 ## Usage
 
-_Add usage instructions here._
+Run main.py to run app
+
+## Tests
+
+Run `python scripts/run_tests.py` to run tests
 
 ## License
 
