@@ -3,8 +3,8 @@ from typing import overload
 
 import numpy as np
 
-COLS = 10
-ROWS = 3
+COLS = 600
+ROWS = 140
 
 class ImageAnalysator:
 

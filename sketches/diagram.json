@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "author": "Anonymous maker",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-nano", "id": "nano", "top": 0, "left": 0, "attrs": {} },
+    {
+      "type": "wokwi-led-strip",
+      "id": "strip1",
+      "top": -132.3,
+      "left": -211.2,
+      "attrs": { "pixels": "8" }
+    }
+  ],
+  "connections": [
+    [ "nano:6", "strip1:DIN", "green", [ "v-52.8", "h-346.1", "v-66.8" ] ],
+    [ "strip1:VDD", "nano:VIN", "green", [ "v-38.4", "h422.4", "v249.6", "h-57.1" ] ],
+    [ "strip1:VSS", "nano:GND.1", "green", [ "h-96", "v220", "h451.7" ] ]
+  ],
+  "dependencies": {}
+}

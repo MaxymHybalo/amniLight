@@ -1,0 +1,3 @@
+[wokwi]
+version = 1
+firmware = '/build/arduino.avr.nano/sketch_mar11a.ino.hex'

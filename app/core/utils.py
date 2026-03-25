@@ -26,7 +26,7 @@ def draw_colors(colors: list[tuple[int, int, int]], dims: tuple[int, int]) -> np
     cols, rows = dims
     if len(colors) > cols * rows:
         raise ValueError("More colors provided than grid slots available.")
-    square_size = 100
+    square_size = 5
     image = np.zeros((rows * square_size, cols * square_size, 3), dtype=np.uint8)
     for idx, color in enumerate(colors):
         col = idx % cols
