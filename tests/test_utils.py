@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from app.core.utils import draw_colors, show_image, show_live
+from app.core.utils import PREVIEW_CELL_SIZE, draw_colors, show_image, show_live
 
 
 class TestDrawColors:
@@ -13,14 +13,15 @@ class TestDrawColors:
         cols, rows = 3, 2
         colors = [(0, 0, 0)] * (cols * rows)
         image = draw_colors(colors, (cols, rows))
-        assert image.shape == (rows * 100, cols * 100, 3)
+        s = PREVIEW_CELL_SIZE
+        assert image.shape == (rows * s, cols * s, 3)
         assert image.dtype == np.uint8
 
     def test_single_color_fills_first_cell(self) -> None:
         color = (40, 100, 200)  # BGR
         image = draw_colors([color], (2, 2))
-        # First 100x100 block should be that color
-        block = image[0:100, 0:100]
+        s = PREVIEW_CELL_SIZE
+        block = image[0:s, 0:s]
         assert np.all(block == color)
 
     def test_colors_placed_row_major(self) -> None:
@@ -32,19 +33,23 @@ class TestDrawColors:
             (4, 0, 0),   # bottom-right
         ]
         image = draw_colors(colors, (2, 2))
-        # Check center of each 100x100 cell
-        assert image[50, 50, 0] == 1
-        assert image[50, 150, 0] == 2
-        assert image[150, 50, 0] == 3
-        assert image[150, 150, 0] == 4
+        s = PREVIEW_CELL_SIZE
+        mid = s // 2
+        # B channel (index 0) holds 1,2,3,4 in each cell
+        assert image[mid, mid, 0] == 1
+        assert image[mid, s + mid, 0] == 2
+        assert image[s + mid, mid, 0] == 3
+        assert image[s + mid, s + mid, 0] == 4
 
     def test_fewer_colors_than_slots_allowed(self) -> None:
         image = draw_colors([(0, 0, 0), (255, 255, 255)], (2, 2))
-        assert image.shape == (200, 200, 3)
+        s = PREVIEW_CELL_SIZE
+        assert image.shape == (2 * s, 2 * s, 3)
 
     def test_empty_colors_all_black(self) -> None:
         image = draw_colors([], (2, 2))
-        assert image.shape == (200, 200, 3)
+        s = PREVIEW_CELL_SIZE
+        assert image.shape == (2 * s, 2 * s, 3)
         np.testing.assert_array_equal(image, 0)
 
     def test_raises_when_more_colors_than_slots(self) -> None:

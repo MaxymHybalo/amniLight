@@ -1,6 +1,9 @@
 import cv2
 import numpy as np
 
+PREVIEW_CELL_SIZE = 5
+
+
 def show_image(image: np.ndarray) -> None:
     cv2.imshow("Screen", image)
     cv2.waitKey(0)
@@ -15,6 +18,7 @@ def show_live(name: str, image: np.ndarray, delay_ms: int = 1) -> int:
     cv2.imshow(name, image)
     return cv2.waitKey(delay_ms)
 
+
 def draw_colors(colors: list[tuple[int, int, int]], dims: tuple[int, int]) -> np.ndarray:
     """
     Draws colors into a grid of passed dimensions.
@@ -26,7 +30,7 @@ def draw_colors(colors: list[tuple[int, int, int]], dims: tuple[int, int]) -> np
     cols, rows = dims
     if len(colors) > cols * rows:
         raise ValueError("More colors provided than grid slots available.")
-    square_size = 5
+    square_size = PREVIEW_CELL_SIZE
     image = np.zeros((rows * square_size, cols * square_size, 3), dtype=np.uint8)
     for idx, color in enumerate(colors):
         col = idx % cols
