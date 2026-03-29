@@ -1,7 +1,7 @@
 #include <NeoPixelBus.h>
 
 // Налаштування
-#define LED_COUNT 69
+#define LED_COUNT 180
 #define LED_PIN 13
 
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip(LED_COUNT, LED_PIN);

@@ -18,19 +18,21 @@ class TestDrawColors:
         assert image.dtype == np.uint8
 
     def test_single_color_fills_first_cell(self) -> None:
-        color = (40, 100, 200)  # BGR
-        image = draw_colors([color], (2, 2))
+        rgb = (40, 100, 200)  # R, G, B
+        image = draw_colors([rgb], (2, 2))
         s = PREVIEW_CELL_SIZE
         block = image[0:s, 0:s]
-        assert np.all(block == color)
+        bgr = (rgb[2], rgb[1], rgb[0])
+        assert np.all(block == bgr)
 
     def test_colors_placed_row_major(self) -> None:
         # (cols, rows) = (2, 2) -> 4 cells: (0,0), (1,0), (0,1), (1,1)
+        # RGB with blue channel 1..4 -> BGR blue in channel index 0
         colors = [
-            (1, 0, 0),   # top-left
-            (2, 0, 0),   # top-right
-            (3, 0, 0),   # bottom-left
-            (4, 0, 0),   # bottom-right
+            (0, 0, 1),   # top-left
+            (0, 0, 2),   # top-right
+            (0, 0, 3),   # bottom-left
+            (0, 0, 4),   # bottom-right
         ]
         image = draw_colors(colors, (2, 2))
         s = PREVIEW_CELL_SIZE

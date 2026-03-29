@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from app.core.image_analysator import ImageAnalysator
+from app.core.image_analysator import COLS, ROWS, ImageAnalysator
 
 
 @pytest.fixture
@@ -123,3 +123,16 @@ class TestGetAccentColor:
         img[1, :] = [255, 255, 255]
         color = analysator.get_accent_color(img)
         np.testing.assert_array_almost_equal(color, [127.5, 127.5, 127.5])
+
+
+class TestAnalyse:
+    """analyse(image) returns RGB per tile."""
+
+    def test_uniform_bgr_image_yields_rgb_tuples(
+        self, analysator: ImageAnalysator
+    ) -> None:
+        # OpenCV BGR: B=10, G=20, R=30 -> RGB (30, 20, 10)
+        img = np.full((60, 100, 3), [10, 20, 30], dtype=np.uint8)
+        colors = analysator.analyse(img)
+        assert len(colors) == ROWS * COLS
+        assert all(c == (30, 20, 10) for c in colors)

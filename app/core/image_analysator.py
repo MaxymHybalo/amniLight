@@ -3,8 +3,8 @@ from typing import overload
 
 import numpy as np
 
-COLS = 600
-ROWS = 140
+COLS = 36
+ROWS = 5
 
 class ImageAnalysator:
 
@@ -12,15 +12,17 @@ class ImageAnalysator:
         pass
 
     def analyse(self, image: np.ndarray) -> list[tuple[int, int, int]]:
-        """Split image into grid, return accent color (BGR int tuple) per tile."""
+        """Split image into grid, return accent color (R, G, B) int tuple per tile."""
         tiles = self.split_image(image, ROWS, COLS)
         colors = []
         for tile in tiles:
             mean_bgr = self.get_accent_color(tile)
-            colors.append(tuple(int(c) for c in mean_bgr))
+            b, g, r = mean_bgr[0], mean_bgr[1], mean_bgr[2]
+            colors.append((int(r), int(g), int(b)))
         return colors
 
     def get_accent_color(self, image: np.ndarray) -> tuple[int, int, int]:
+        """Mean color in image channel order (BGR for OpenCV frames)."""
         return image.mean(axis=(0, 1))
 
     @overload

@@ -23,9 +23,9 @@ def draw_colors(colors: list[tuple[int, int, int]], dims: tuple[int, int]) -> np
     """
     Draws colors into a grid of passed dimensions.
 
-    :param colors: List of BGR (int, int, int) color triples.
+    :param colors: List of RGB (int, int, int) color triples.
     :param dims: (cols, rows) - how many colors per row and how many rows.
-    :return: np.ndarray of the composed image.
+    :return: np.ndarray BGR image (OpenCV layout).
     """
     cols, rows = dims
     if len(colors) > cols * rows:
@@ -37,5 +37,7 @@ def draw_colors(colors: list[tuple[int, int, int]], dims: tuple[int, int]) -> np
         row = idx // cols
         top_left = (col * square_size, row * square_size)
         bottom_right = ((col + 1) * square_size, (row + 1) * square_size)
-        cv2.rectangle(image, top_left, bottom_right, color, -1)
+        r, g, b = color
+        bgr = (b, g, r)
+        cv2.rectangle(image, top_left, bottom_right, bgr, -1)
     return image
