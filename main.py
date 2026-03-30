@@ -10,7 +10,8 @@ from app.core.screen_reader import ScreenReader
 from app.core.utils import draw_colors, show_image, show_live
 from app.core.server import create_websocket_client, build_frame_packet, build_brightness_packet, CODE
 from app.core.optimizations import optimize_colors
-FPS = 15
+from app.core.server import NUM_LEDS
+FPS = 60
 _FRAME_TIME = 1.0 / FPS
 
 
@@ -25,7 +26,9 @@ def _hash_prepared_colors(colors: list[tuple[int, int, int]]) -> str:
 def run_live() -> None:
     """Capture screen, split into grid, show accent colors; update live until 'q' or ESC."""
     window_name = "AmbiLight"
+    print('Creating websocket client')
     ws = create_websocket_client()
+    print('Sending brightness packet')
     ws.send(build_brightness_packet(150), CODE)
     with ScreenReader(save_folder="bin") as reader:
         analysator = ImageAnalysator()
@@ -44,7 +47,7 @@ def run_live() -> None:
                 changed = last_hash is not None and color_hash != last_hash
                 if changed:
                     ws.send(packet, CODE)
-                    print('Color packet sent')
+                    print('Color packet sent', color_hash)
                 last_hash = color_hash
                 preview = draw_colors(prepared_color, (COLS, ROWS))
                 key = show_live(window_name, preview, delay_ms=1)

@@ -3,7 +3,12 @@
 import numpy as np
 import pytest
 
-from app.core.image_analysator import COLS, ROWS, ImageAnalysator
+from app.core.image_analysator import (
+    COLS,
+    PERIM_LED_COUNT,
+    ROWS,
+    ImageAnalysator,
+)
 
 
 @pytest.fixture
@@ -136,3 +141,35 @@ class TestAnalyse:
         colors = analysator.analyse(img)
         assert len(colors) == ROWS * COLS
         assert all(c == (30, 20, 10) for c in colors)
+
+
+class TestSplitImagePerimeter:
+    """split_image_perimeter — edge strips."""
+
+    def test_tile_count_matches_sum_of_edges(
+        self, analysator: ImageAnalysator
+    ) -> None:
+        img = np.zeros((120, 200, 3), dtype=np.uint8)
+        nl, nt, nr, nb = 2, 5, 3, 4
+        tiles = analysator.split_image_perimeter(
+            img, n_left=nl, n_top=nt, n_right=nr, n_bottom=nb
+        )
+        assert len(tiles) == nl + nt + nr + nb
+
+    def test_defaults_yield_perim_led_count(
+        self, analysator: ImageAnalysator
+    ) -> None:
+        img = np.zeros((1080, 1920, 3), dtype=np.uint8)
+        tiles = analysator.split_image_perimeter(img)
+        assert len(tiles) == PERIM_LED_COUNT == 260
+
+    def test_each_tile_is_bgr_and_non_empty(
+        self, analysator: ImageAnalysator
+    ) -> None:
+        img = np.full((50, 80, 3), [1, 2, 3], dtype=np.uint8)
+        tiles = analysator.split_image_perimeter(
+            img, n_left=2, n_top=2, n_right=2, n_bottom=2
+        )
+        for t in tiles:
+            assert t.ndim == 3 and t.shape[2] == 3
+            assert t.size > 0
