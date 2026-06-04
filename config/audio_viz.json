@@ -1,0 +1,38 @@
+{
+  "fps": 45,
+  "layout": "dual_monitor",
+  "source": "loopback",
+  "block_size": 2048,
+  "attack": 0.1,
+  "decay": 0.018,
+  "peak_attack": 0.08,
+  "peak_decay": 0.02,
+  "hue_steps": 20,
+  "level_steps": 12,
+  "palette": {
+    "hue_blue": 0.53,
+    "hue_purple": 0.76,
+    "hue_pink": 0.93,
+    "dark_level_max": 0.16,
+    "max_brightness": 0.78,
+    "color_gamma": 1.4,
+    "saturation": 0.94,
+    "vocal_pink_mix_lo": 0.72,
+    "vocal_sat": 0.72,
+    "bass_sat": 0.96
+  },
+  "pulses": {
+    "bass_attack": 0.28,
+    "bass_release": 0.011,
+    "vocal_attack": 0.38,
+    "vocal_release": 0.02,
+    "ripple_attack": 0.45,
+    "ripple_release": 0.038
+  },
+  "optimize": {
+    "rise_alpha": 0.13,
+    "fall_alpha": 0.05,
+    "step": 6,
+    "dark_threshold": 6
+  }
+}

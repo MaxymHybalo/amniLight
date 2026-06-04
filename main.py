@@ -6,12 +6,16 @@ import time
 import cv2
 
 from app.core.image_analysator import ImageAnalysator, ROWS, COLS
+from app.core.audio_analysator import AudioAnalysator
+from app.core.audio_config import DEFAULT_CONFIG_PATH, load_audio_viz_config
 from app.core.screen_reader import ScreenReader
 from app.core.utils import draw_colors, show_image, show_live
 from app.core.server import create_websocket_client, build_frame_packet, build_brightness_packet, CODE
-from app.core.optimizations import optimize_colors
+from app.core.optimizations import optimize_colors, optimize_colors_audio_from_config
 from app.core.server import NUM_LEDS
-FPS = 60
+
+AUDIO_CONFIG = load_audio_viz_config()
+FPS = AUDIO_CONFIG.fps
 _FRAME_TIME = 1.0 / FPS
 
 
@@ -29,18 +33,28 @@ def run_live() -> None:
     print('Creating websocket client')
     ws = create_websocket_client()
     print('Sending brightness packet')
-    ws.send(build_brightness_packet(150), CODE)
+    ws.send(build_brightness_packet(40), CODE)
     with ScreenReader(save_folder="bin") as reader:
-        analysator = ImageAnalysator()
+        # ImageAnalysator() for screen; audio uses config/audio_viz.json
+        print(f"Loading audio config from {DEFAULT_CONFIG_PATH}")
+        analysator = AudioAnalysator.from_config(AUDIO_CONFIG)
         try:
             previous_colors: list[tuple[int, int, int]] = []
             last_hash: str | None = None
             while True:
                 frame_start = time.perf_counter()
-                frame = reader.get_image()
-                colors = analysator.analyse(frame)
+                colors = analysator.analyse()
                 # print('Colors:', colors)
-                prepared_color = optimize_colors(previous_colors, colors) if previous_colors else colors
+                if previous_colors:
+                    prepared_color = (
+                        optimize_colors_audio_from_config(
+                            previous_colors, colors, AUDIO_CONFIG.optimize
+                        )
+                        if isinstance(analysator, AudioAnalysator)
+                        else optimize_colors(previous_colors, colors)
+                    )
+                else:
+                    prepared_color = colors
                 packet = build_frame_packet(prepared_color)
                 previous_colors = colors
                 color_hash = _hash_prepared_colors(prepared_color)
@@ -60,6 +74,8 @@ def run_live() -> None:
         except Exception as e:
             print(f"Error: {e}")
         finally:
+            if hasattr(analysator, "close"):
+                analysator.close()
             ws.close()
             print('Closing window')
     cv2.destroyAllWindows()
