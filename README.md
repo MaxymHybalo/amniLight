@@ -8,7 +8,13 @@ _Add setup instructions here._
 
 ## Usage
 
-Run main.py to run app
+```powershell
+python .\main.py
+python .\main.py --mode audio
+python .\main.py --mode image
+```
+
+`--mode audio` visualizes system audio (loopback) using `config/audio_viz.json`. `--mode image` samples the screen for ambilight colors. If you omit `--mode`, the default is `MODE` at the top of `main.py` (`audio` or `image`). Press `q` or ESC to quit.
 
 ## Tests
 
@@ -18,16 +24,3 @@ Run `python scripts/run_tests.py` to run tests
 
 _Add license information if needed._
 
-
-80x35
-60x35
-
-80 + 60 = 140
-
-80+60+35+35+80+60
-~420 mm
-
-
-~300 mm
-
-70+70+50+50+30+30

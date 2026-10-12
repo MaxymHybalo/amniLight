@@ -28,6 +28,7 @@ def build_frame_packet(colors: list[tuple[int, int, int]]) -> bytes:
 
     return bytes(payload)
 
+
 def build_brightness_packet(value: int) -> bytes:
     value = max(0, min(255, int(value)))
     return bytes([0x02, value])
